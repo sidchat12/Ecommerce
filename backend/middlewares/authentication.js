@@ -133,13 +133,11 @@ require('dotenv').config();
 const express = require("express");
 const jwt = require("jsonwebtoken");
 const oracledb = require("oracledb");
-const bcrypt = require("bcrypt");
 
 const app = express();
 app.use(express.json());
 
 const SECRET_KEY = process.env.SECRET_KEY;
-const saltRounds = 10;
 
 const dbConfig = {
   user: process.env.DB_USER,
@@ -167,17 +165,15 @@ async function seller_signup(req, res) {
   let connection;
   try {
     connection = await oracledb.getConnection(dbConfig);
-    const { seller_id, seller_email, name, password } = req.body;
+    const { name, email,username,phone,password } = req.body;
 
-    const checkDuplicateId = await connection.execute('SELECT seller_id FROM seller WHERE seller_id=:1', [seller_id]);
+    const checkDuplicateId = await connection.execute('SELECT seller_id FROM seller WHERE seller_id=:1', [username]);
     if (checkDuplicateId.rows.length > 0) return res.status(400).json({ message: 'Seller ID already exists.' });
 
-    const hashedPassword = await bcrypt.hash(password, saltRounds);
-    const address_id = null;
 
     await connection.execute(
-      "INSERT INTO SELLER (seller_id, seller_email, address_id, name, password) VALUES (:1, :2, :3, :4, :5)",
-      [seller_id, seller_email, address_id, name, hashedPassword],
+      "INSERT INTO SELLER (seller_id, seller_email, mobile,name, password) VALUES (:1, :2, :3, :4, :5)",
+      [username,email, phone, name, password],
       { autoCommit: true }
     );
 
@@ -193,15 +189,15 @@ async function seller_login(req, res) {
   let connection;
   try {
     connection = await oracledb.getConnection(dbConfig);
-    const { seller_id, password } = req.body;
+    const { username, password } = req.body;
     
-    const result = await connection.execute("SELECT password FROM seller WHERE seller_id = :1", [seller_id]);
+    const result = await connection.execute("SELECT password FROM seller WHERE seller_id = :1", [username]);
     if (result.rows.length === 0) return res.status(400).json({ message: "Seller not found" });
 
-    const isMatch = await bcrypt.compare(password, result.rows[0][0]);
+    const isMatch =(password===result.rows[0][0]);
     if (!isMatch) return res.status(401).json({ message: "Invalid credentials" });
 
-    const token = jwt.sign({ seller_id }, SECRET_KEY, { expiresIn: "1h" });
+    const token = jwt.sign({ username }, SECRET_KEY, { expiresIn: "1h" });
     res.json({ token });
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -214,17 +210,15 @@ async function user_signup(req, res) {
   let connection;
   try {
     connection = await oracledb.getConnection(dbConfig);
-    const { user_id, user_name, mobile_number, password } = req.body;
+    const { name,email,username,phone,password } = req.body;
 
-    const checkDuplicateId = await connection.execute('SELECT user_id FROM user_table WHERE user_id=:1', [user_id]);
-    if (checkDuplicateId.rows.length > 0) return res.status(400).json({ message: 'User ID already exists.' });
+   {/* const checkDuplicateId = await connection.execute('SELECT user_id FROM user_table WHERE user_id=:1', [username]);
+    if (checkDuplicateId.rows.length > 0) return res.status(400).json({ message: 'User ID already exists.' });*/}
 
-    const hashedPassword = await bcrypt.hash(password, saltRounds);
-    const address_id = null;
 
     await connection.execute(
-      "INSERT INTO user_table (user_id, user_name, address_id, mobile_number, password) VALUES (:1, :2, :3, :4, :5)",
-      [user_id, user_name, address_id, mobile_number, hashedPassword],
+      `INSERT INTO user_table (user_id, user_name, email,mobile_number, password) VALUES (:1, :2, :3, :4, :5)`,
+      [username,name, email, phone, password],
       { autoCommit: true }
     );
 
@@ -240,15 +234,15 @@ async function user_login(req, res) {
   let connection;
   try {
     connection = await oracledb.getConnection(dbConfig);
-    const { user_id, password } = req.body;
+    const { username, password } = req.body;
 
-    const result = await connection.execute("SELECT password FROM USER_TABLE WHERE user_id = :1", [user_id]);
+    const result = await connection.execute("SELECT password FROM USER_TABLE WHERE user_id = :1", [username]);
     if (result.rows.length === 0) return res.status(400).json({ message: "Invalid credentials" });
 
-    const isMatch = await bcrypt.compare(password, result.rows[0][0]);
+    const isMatch =(password=== result.rows[0][0]);
     if (!isMatch) return res.status(401).json({ message: "Invalid credentials" });
 
-    const token = jwt.sign({ user_id }, SECRET_KEY, { expiresIn: "1h" });
+    const token = jwt.sign({ username }, SECRET_KEY, { expiresIn: "1h" });
     res.json({ token });
   } catch (error) {
     res.status(500).json({ error: error.message });

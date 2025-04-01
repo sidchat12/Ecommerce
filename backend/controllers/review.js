@@ -13,14 +13,14 @@ const dbConfig = {
 
 //function to allow user to add reviews on a product
 async function addreview(req, res){
-    const {review_stars, review_text } = req.body;
-    let review_id=await uuidv4();
+    const {rating, review } = req.body;
+    let review_id=uuidv4();
     let {user_id,product_id}=req.params;
-    if (!review_id || !user_id || !product_id || review_stars === undefined || !review_text) {
+    if (!review_id || !user_id || !product_id || rating === undefined || !review) {
         return res.status(400).json({ error: 'Missing required fields' });
     }
 
-    if (review_stars < 0 || review_stars > 5) {
+    if (rating < 0 || rating > 5) {
         return res.status(400).json({ error: 'Review stars must be between 0 and 5' });
     }
 
@@ -50,8 +50,8 @@ async function addreview(req, res){
 
         await connection.execute(
             `INSERT INTO review_table (review_id,   review_stars, review_text, review_time) 
-             VALUES (:review_id,  :review_stars, :review_text, SYSTIMESTAMP)`,
-            { review_id,  review_stars, review_text },
+             VALUES (:review_id,  :rating, :review, SYSTIMESTAMP)`,
+            { review_id,  rating, review },
             { autoCommit: true }
         );
 
@@ -85,7 +85,7 @@ async function addreview(req, res){
     try {
         connection = await oracledb.getConnection(dbConfig);
 
-        const sql = `SELECT rev.review_id, r.user_id, rev.review_stars, rev.review_text, rev.review_time 
+        const sql = `SELECT rev.review_id, r.user_id, rev.rating, rev.review, rev.review_time 
                      FROM review_table rev,reviews r where rev.review_id=r.review_id and r.product_id=:product_id`;
 
         const result = await connection.execute(sql, { product_id }, { outFormat: oracledb.OUT_FORMAT_OBJECT });

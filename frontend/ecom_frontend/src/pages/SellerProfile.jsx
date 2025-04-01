@@ -34,8 +34,12 @@ export default function SellerProfile() {
         <h2 className="text-2xl font-bold text-center mb-6">Seller Profile</h2>
         <div className="space-y-4">
           <div>
-            <p className="font-semibold">Username:</p>
-            <p>{sellerData.user_name}</p>
+            <p className="font-semibold">Seller ID:</p>
+            <p>{sellerData.seller_id}</p>
+          </div>
+          <div>
+            <p className="font-semibold">Email:</p>
+            <p>{sellerData.seller_email}</p>
           </div>
           <div>
             <p className="font-semibold">Name:</p>
@@ -43,11 +47,12 @@ export default function SellerProfile() {
           </div>
           <div>
             <p className="font-semibold">Mobile Number:</p>
-            <p>{sellerData.mobile_number}</p>
+            <p>{sellerData.mobile}</p>
           </div>
           <div>
-            <p className="font-semibold">Address ID:</p>
-            <p>{sellerData.address_id || "N/A"}</p>
+            <p className="font-semibold">Address:</p>
+            <p>{sellerData.address_line_1}, {sellerData.address_line_2}</p>
+            <p>{sellerData.city}, {sellerData.state} - {sellerData.pincode}</p>
           </div>
           <div className="space-y-2 mt-4">
             <button className="btn w-full bg-[#FCF6F5] text-[#990011] hover:font-bold">Change Password</button>

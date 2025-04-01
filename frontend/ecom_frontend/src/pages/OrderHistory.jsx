@@ -39,8 +39,7 @@ const OrderHistory = () => {
                 <th className="border p-2">Order ID</th>
                 <th className="border p-2">Product</th>
                 <th className="border p-2">Price</th>
-                <th className="border p-2">Address</th>
-                <th className="border p-2">User</th>
+                <th className="border p-2">Purchase Time</th>
               </tr>
             </thead>
             <tbody>
@@ -51,10 +50,7 @@ const OrderHistory = () => {
                   </td>
                   <td className="border p-2">{order.product_title}</td>
                   <td className="border p-2">₹{order.price}</td>
-                  <td className="border p-2">
-                    {order.address_line_1}, {order.address_line_2}, {order.city}, {order.state} - {order.pincode}
-                  </td>
-                  <td className="border p-2">{order.user_name}</td>
+                  <td className="border p-2">{order.purchase_time}</td>
                 </tr>
               ))}
             </tbody>

@@ -1,8 +1,10 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+
 const ProductPage = () => {
-  const { product_id } = useParams();
+  const { product_id, user_id } = useParams();
+  const navigate = useNavigate();
   const [product, setProduct] = useState(null);
   const [error, setError] = useState(null);
 
@@ -40,33 +42,13 @@ const ProductPage = () => {
             <div className="mt-4">
               <span className="text-xl font-semibold text-gray-900">₹{product.price}</span>
             </div>
-            <div className="mt-6">
-              <label htmlFor="quantity" className="block text-sm font-medium text-gray-700">
-                Quantity
-              </label>
-              <input
-                type="number"
-                id="quantity"
-                name="quantity"
-                defaultValue="1"
-                min="1"
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-              />
-            </div>
-            <div className="mt-6 flex space-x-4">
-              <button
-                type="button"
-                className="flex-1 bg-indigo-600 text-white py-2 px-4 rounded-md shadow-sm text-sm font-medium hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-              >
-                Add to cart
-              </button>
-              <button
-                type="button"
-                className="flex-1 bg-gray-200 text-gray-700 py-2 px-4 rounded-md shadow-sm text-sm font-medium hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-              >
-                Buy now
-              </button>
-            </div>
+            <button
+              type="button"
+              className="mt-6 bg-indigo-600 text-white py-2 px-4 rounded-md shadow-sm text-sm font-medium hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+              onClick={() => navigate(`/user/${user_id}/${product_id}/order`)}
+            >
+              Buy Now
+            </button>
           </div>
         </div>
       </div>

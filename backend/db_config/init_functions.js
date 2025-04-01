@@ -30,10 +30,9 @@ async function createTables() {
             `CREATE TABLE SELLER (
                 seller_id VARCHAR2(200) PRIMARY KEY,
                 seller_email varchar2(200),
-                address_id VARCHAR2(200),
+                mobile number(10),
                 name VARCHAR2(200) NOT NULL,
-                password VARCHAR2(200) NOT NULL,
-                FOREIGN KEY (address_id) REFERENCES ADDRESS(address_id)
+                password VARCHAR2(200) NOT NULL
             )`,
             `CREATE TABLE SELLS (
                 seller_id VARCHAR2(200),
@@ -42,10 +41,9 @@ async function createTables() {
             `CREATE TABLE USER_TABLE (
                 user_id VARCHAR2(200) PRIMARY KEY,
                 user_name VARCHAR2(200) NOT NULL,
-                address_id VARCHAR2(200),
+                email varchar2(200),
                 mobile_number NUMBER(10) UNIQUE NOT NULL,
-                password VARCHAR2(200) NOT NULL,
-                FOREIGN KEY (address_id) REFERENCES ADDRESS(address_id)
+                password VARCHAR2(200) NOT NULL
             )`,
             `CREATE TABLE PRODUCT (
                 product_id VARCHAR2(200) PRIMARY KEY,
@@ -54,13 +52,6 @@ async function createTables() {
                 description VARCHAR2(200),
                 photo VARCHAR2(200),
                 category VARCHAR2(200) CHECK (category IN ('Mens','Womens','Kids','Books','Electronics','Sports','Stationary'))
-            )`,
-            `CREATE TABLE ADD_TO_CART (
-                product_id VARCHAR2(200),
-                user_id VARCHAR2(200),
-                PRIMARY KEY (product_id, user_id),
-                FOREIGN KEY (product_id) REFERENCES PRODUCT(product_id),
-                FOREIGN KEY (user_id) REFERENCES USER_TABLE(user_id)
             )`,
             `CREATE TABLE REVIEW_TABLE (
                 review_id VARCHAR2(200) PRIMARY KEY,
@@ -82,7 +73,8 @@ async function createTables() {
                 FOREIGN KEY (product_id) REFERENCES PRODUCT(product_id),
                 FOREIGN KEY (user_id) REFERENCES USER_TABLE(user_id),
                 FOREIGN KEY (address_id) REFERENCES ADDRESS(address_id)
-            )`,`CREATE TABLE LIVES (
+            )`,
+            `CREATE TABLE LIVES (
                 user_id VARCHAR2(200),
                 address_id VARCHAR2(200),
                 FOREIGN KEY (user_id) REFERENCES USER_TABLE(user_id),
@@ -119,7 +111,7 @@ async function dropTables() {
 
         const queries = [
             
-            `DROP TABLE ADD_TO_CART CASCADE CONSTRAINTS`,
+            
             `DROP TABLE BOUGHT CASCADE CONSTRAINTS`,
             `DROP TABLE REVIEW_TABLE CASCADE CONSTRAINTS`,
            ` DROP TABLE REVIEWS CASCADE CONSTRAINTS`,

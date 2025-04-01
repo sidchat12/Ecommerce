@@ -21,8 +21,8 @@ async function getuser(req, res){
     try {
         connection = await oracledb.getConnection(dbConfig);
 
-        const sql = `SELECT user_id, user_name, mobile_number, address_id 
-                     FROM user_table WHERE user_id = :user_id`;
+        const sql = `select u.user_id,u.user_name,u.email,u.mobile_number,a.address_line_1,a.address_line_2,a.city,a.state,a.pincode from
+        usert_table u,address a,lives l where l.address_id=a.address_id and l.user_id=u.user_id and u.user_id=:user_id`;
 
         const result = await connection.execute(sql, { user_id }, { outFormat: oracledb.OUT_FORMAT_OBJECT });
 
@@ -53,8 +53,8 @@ async function getseller(req, res){
     try {
         connection = await oracledb.getConnection(dbConfig);
 
-        const sql = `SELECT seller_id, name, address_id 
-                     FROM seller WHERE seller_id = :seller_id`;
+        const sql = `SELECT s.seller_id,s.seller_email, s.name,s.mobile,s.password,a.address_line_1,a.address_line_2,a.city,a.state,
+        a.pincode,a.state from seller s,address a,lives l where l.user_id=s.seller_id and l.address_id=a.address_id and s.seller_id=:seller_id`;
 
         const result = await connection.execute(sql, { seller_id }, { outFormat: oracledb.OUT_FORMAT_OBJECT });
 

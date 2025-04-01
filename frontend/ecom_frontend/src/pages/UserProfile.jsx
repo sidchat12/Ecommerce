@@ -1,9 +1,10 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 export default function UserProfile() {
   const { user_id } = useParams();
+  const navigate = useNavigate();
   const [userData, setUserData] = useState(null);
   const [error, setError] = useState(null);
 
@@ -34,25 +35,31 @@ export default function UserProfile() {
         <h2 className="text-2xl font-bold text-center mb-6">User Profile</h2>
         <div className="space-y-4">
           <div>
+            <p className="font-semibold">User ID:</p>
+            <p>{userData.user_id}</p>
+          </div>
+          <div>
             <p className="font-semibold">Username:</p>
             <p>{userData.user_name}</p>
           </div>
           <div>
-            <p className="font-semibold">Name:</p>
-            <p>{userData.name || "N/A"}</p>
+            <p className="font-semibold">Email:</p>
+            <p>{userData.email}</p>
           </div>
           <div>
             <p className="font-semibold">Mobile Number:</p>
             <p>{userData.mobile_number}</p>
           </div>
           <div>
-            <p className="font-semibold">Address ID:</p>
-            <p>{userData.address_id || "N/A"}</p>
+            <p className="font-semibold">Address:</p>
+            <p>{userData.address_line_1}, {userData.address_line_2}</p>
+            <p>{userData.city}, {userData.state} - {userData.pincode}</p>
           </div>
           <div className="space-y-2 mt-4">
             <button className="btn w-full bg-[#FCF6F5] text-[#990011] hover:font-bold">Change Password</button>
-            <button className="btn w-full bg-[#FCF6F5] text-[#990011] hover:font-bold">View Order History</button>
-            <button className="btn w-full bg-gray-500 text-white hover:font-bold">Go Back</button>
+            <button className="btn w-full bg-[#FCF6F5] text-[#990011] hover:font-bold" onClick={() => navigate(`/user/${user_id}/history`)}>View Order History</button>
+            <button className="btn w-full bg-red-600 text-white hover:font-bold" onClick={() => navigate('/logout')}>Logout</button>
+            <button className="btn w-full bg-gray-500 text-white hover:font-bold" onClick={() => navigate(-1)}>Go Back</button>
           </div>
         </div>
       </div>
